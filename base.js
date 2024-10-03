@@ -2,7 +2,7 @@ let canvas = document.getElementById("jueguito")
 let ctx = canvas.getContext("2d")
 canvas.style.background = "#DCDFE1" 
 
-let x=50, y=100, xv=38, yv=10, x2=0, y2=0
+let x=50, y=100, xv=40, yv=15, x2=0, y2=0
 let right=false, left=false, up=false, down=false, ct=0
 
 let groundX=[400,50,700,25, 0,500], groundY=[250,-50,70,75, 300,50]
@@ -99,15 +99,15 @@ function movimiento(){
   }
 
   if(down){
-    yv=yv+0.5
+    yv=yv-0.5
   }
 
   if(up && ct<10){
-    yv=yv-10
+    yv=yv+10
     ct=10
   }
 
-  yv=yv+0.5
+  yv=yv-0.5
       
   ct++
 
@@ -119,24 +119,49 @@ function movimiento(){
   xv=xv*0.9
 
   for(let i=0; i<10; i++){
-  y2=y
-  y=y+(yv/10)
-  colisiones("y")
+    y2=y
+    y=y+(-yv/10)
+    colisiones("y")
   }
 }
 
 function colisiones(xy){
   for(let i=0; i<(groundX.length); i=i+2){
+//Colisiones en eje X ========================================
+    if((groundX[i+1]>0 &&
+      (x+10)>groundX[i] &&
+      (x-10)<groundX[i]+groundX[i+1]) ||
+      
+      (groundX[i+1]<0 &&
+        (x-10)<groundX[i] &&
+        (x+10)>groundX[i]+groundX[i+1]))
+    {
+//Colisiones en eje Y ========================================
+      if((groundY[i+1]>0 &&
+        (y+10)>groundY[i] &&
+        (y-10)<groundY[i]+groundY[i+1]) ||
 
-
+        (groundY[i+1]<0 &&
+          (y-10)<groundY[i] &&
+          (y+10)>groundY[i]+groundY[i+1]))
+      {
+        if(xy=="x"){
+          x=x2
+        }else if(xy=="y"){
+          y=y2
+          if(yv<=0){
+            ct=0
+          }
+          yv=0
+        }
+      }
+    }
   }
 }
 
 function ground(){
 
     for(let i=0; i<(groundX.length); i=i+2){
-        ctx.fillStyle = "#000000"
-
         ctx.fillStyle = "#FFFFFF"
         ctx.fillRect(groundX[i], groundY[i], groundX[i+1], groundY[i+1])
     }
